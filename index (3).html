@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>サブスクリプション管理</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <!-- モバイルメニューボタン -->
+        <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="メニューを開く">
+            <span class="hamburger"></span>
+        </button>
+
+        <!-- サイドバーナビゲーション -->
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h2>サブスク管理</h2>
+            </div>
+            <ul class="nav-menu">
+                <li><a href="#dashboard" class="nav-link active" data-section="dashboard">📊 ダッシュボード</a></li>
+                <li><a href="#subscriptions" class="nav-link" data-section="subscriptions">📋 サブスクリプション</a></li>
+                <li><a href="#calendar" class="nav-link" data-section="calendar">📅 カレンダー</a></li>
+                <li><a href="#analytics" class="nav-link" data-section="analytics">📈 分析</a></li>
+                <li><a href="#settings" class="nav-link" data-section="settings">⚙️ 設定</a></li>
+            </ul>
+        </nav>
+
+        <!-- メインコンテンツ -->
+        <main class="main-content">
+            <!-- ダッシュボードセクション -->
+            <section class="section active" id="dashboard-section">
+                <div class="section-header">
+                    <h1>ダッシュボード</h1>
+                    <div class="theme-toggle">
+                        <button id="themeToggle" class="btn btn--secondary">🌙 ダークモード</button>
+                    </div>
+                </div>
+
+                <!-- 統計カード -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-content">
+                            <h3>月額合計</h3>
+                            <p class="stat-value" id="totalMonthly">¥0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📦</div>
+                        <div class="stat-content">
+                            <h3>アクティブなサブスク</h3>
+                            <p class="stat-value" id="activeCount">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">⏰</div>
+                        <div class="stat-content">
+                            <h3>今週の支払い</h3>
+                            <p class="stat-value" id="upcomingPayments">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon">📊</div>
+                        <div class="stat-content">
+                            <h3>年額合計</h3>
+                            <p class="stat-value" id="yearlyTotal">¥0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- チャートとクイックアクション -->
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>支出推移</h3>
+                            <canvas id="spendingChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>今後の支払い</h3>
+                            <div id="upcomingList" class="upcoming-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- サブスクリプションセクション -->
+            <section class="section" id="subscriptions-section">
+                <div class="section-header">
+                    <h1>サブスクリプション</h1>
+                    <button class="btn btn--primary" id="addSubscriptionBtn">+ 新規追加</button>
+                </div>
+
+                <!-- フィルターとソート -->
+                <div class="filters">
+                    <input type="text" class="form-control" id="searchInput" placeholder="サブスクリプションを検索...">
+                    <select class="form-control" id="categoryFilter">
+                        <option value="">すべてのカテゴリ</option>
+                    </select>
+                    <select class="form-control" id="statusFilter">
+                        <option value="">すべてのステータス</option>
+                        <option value="active">アクティブ</option>
+                        <option value="paused">一時停止</option>
+                        <option value="cancelled">キャンセル</option>
+                    </select>
+                    <select class="form-control" id="sortBy">
+                        <option value="name">名前順</option>
+                        <option value="price">価格順</option>
+                        <option value="nextPayment">次回支払日順</option>
+                    </select>
+                </div>
+
+                <!-- サブスクリプション一覧 -->
+                <div class="subscriptions-grid" id="subscriptionsGrid"></div>
+            </section>
+
+            <!-- カレンダーセクション -->
+            <section class="section" id="calendar-section">
+                <div class="section-header">
+                    <h1>支払いカレンダー</h1>
+                    <div class="calendar-nav">
+                        <button class="btn btn--secondary" id="prevMonth">‹</button>
+                        <span id="currentMonth"></span>
+                        <button class="btn btn--secondary" id="nextMonth">›</button>
+                    </div>
+                </div>
+                <div class="calendar" id="calendar"></div>
+            </section>
+
+            <!-- 分析セクション -->
+            <section class="section" id="analytics-section">
+                <div class="section-header">
+                    <h1>分析</h1>
+                </div>
+                <div class="analytics-grid">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>カテゴリ別支出</h3>
+                            <canvas id="categoryChart" width="300" height="300"></canvas>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>月別支出推移</h3>
+                            <canvas id="monthlyChart" width="400" height="200"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 設定セクション -->
+            <section class="section" id="settings-section">
+                <div class="section-header">
+                    <h1>設定</h1>
+                </div>
+                <div class="settings-grid">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>通知設定</h3>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="emailNotifications"> メール通知を受け取る
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">
+                                    <input type="checkbox" id="pushNotifications"> プッシュ通知を受け取る
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>通貨設定</h3>
+                            <div class="form-group">
+                                <label class="form-label">デフォルト通貨</label>
+                                <select class="form-control" id="currencySelect">
+                                    <option value="JPY">日本円 (¥)</option>
+                                    <option value="USD">米ドル ($)</option>
+                                    <option value="EUR">ユーロ (€)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- モーダル -->
+    <div class="modal" id="subscriptionModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">サブスクリプションを追加</h2>
+                <button class="modal-close" id="modalClose">&times;</button>
+            </div>
+            <form id="subscriptionForm" class="modal-body">
+                <div class="form-group">
+                    <label class="form-label">サービス名</label>
+                    <input type="text" class="form-control" id="serviceName" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">価格</label>
+                    <input type="number" class="form-control" id="servicePrice" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">請求サイクル</label>
+                    <select class="form-control" id="serviceCycle" required>
+                        <option value="monthly">月額</option>
+                        <option value="yearly">年額</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">次回支払日</label>
+                    <input type="date" class="form-control" id="serviceDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">カテゴリ</label>
+                    <select class="form-control" id="serviceCategory" required>
+                        <option value="streaming">ストリーミング</option>
+                        <option value="music">音楽</option>
+                        <option value="software">ソフトウェア</option>
+                        <option value="productivity">生産性</option>
+                        <option value="fitness">フィットネス</option>
+                        <option value="news">ニュース</option>
+                        <option value="gaming">ゲーム</option>
+                        <option value="other">その他</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">説明</label>
+                    <textarea class="form-control" id="serviceDescription" rows="3"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn--secondary" id="cancelBtn">キャンセル</button>
+                    <button type="submit" class="btn btn--primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- トースト通知 -->
+    <div class="toast" id="toast">
+        <span id="toastMessage"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
